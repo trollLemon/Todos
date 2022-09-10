@@ -30,7 +30,7 @@ enum todoStatus
         std::string name;
         bool isDone;
     public:
-        Task(std::string& title, std::string& input)
+        Task(std::string title, std::string input)
         {
             this->name = title;
             this->content = input;
@@ -45,6 +45,11 @@ enum todoStatus
         std::string getContent()
         {
             return this->content;
+        };
+
+        std::string getName()
+        {
+            return this->name;
         };
 
         void setContent(std::string& newStuff)
@@ -99,6 +104,11 @@ class Todo{
     void done()
     {
         this->status = todoStatus::done;
+    };
+
+    void addTask(Task& task)
+    {
+    this-> tasks.push_back(task);
     };
 
     std::string& getName()

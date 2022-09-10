@@ -2,6 +2,7 @@
 #include "types.h"
 #include "yaml-cpp/yaml.h"
 #include <iostream>
+#include <fstream>
 
   //helper function to return strings based on the status Enum in types.h
     std::string status( todoStatus stat)
@@ -57,8 +58,11 @@ namespace datastream {
             output << YAML::EndMap; 
         }
 
-        std::cout << "Here's the output YAML:\n" << output.c_str();
-
+        //overwrite old data in the data.yaml file with the new data
+        std::ofstream file;
+        file.open(path, std::ofstream::out);
+        file << output.c_str();
+        file.close();
     }
     void createBackup()
     {

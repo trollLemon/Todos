@@ -30,6 +30,9 @@ namespace datastream {
 
     std::vector<Todo> readFile(std::string& path)
     {
+        std::ifstream file(path);
+        YAML::Parser parser(file);
+
         std::vector<Todo> data{};
         return data;
     }
@@ -46,14 +49,22 @@ namespace datastream {
             output << YAML::Key   << "Status";
             output << YAML::Value << status(todo.getStatus());
             
+            int counter {0};
             //now loop through all our tasks
             for (Task& task : todo.getTasks())
             {
-                output << YAML::Key   << task.getName();
-                output << YAML::Value << YAML::BeginSeq 
-                                      << task.getContent()
-                                      << task.getStatus()
-                                      << YAML::EndSeq;
+                 std::string header {"Task "};
+                 header += std::to_string(counter);
+                 output << YAML::Key   << header ;
+                 output << YAML::Value 
+                        << YAML::BeginSeq
+                        << task.getName()
+                        << task.getContent()
+                        << task.getStatus()
+                        << YAML::EndSeq;
+
+                 ++counter;
+                                    
             }
             output << YAML::EndMap; 
         }

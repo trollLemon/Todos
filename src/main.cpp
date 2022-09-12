@@ -17,7 +17,7 @@ int main()
     Todo test3 = Todo("test");
     
     Task t = Task("test", "Test code for bugs");
-    Task y = Task("test", "There are bugs in the code");
+    Task y = Task("r", "There are bugs in the code");
 
     test.addTask(t);
     test2.addTask(t);
@@ -27,6 +27,7 @@ int main()
     todos.push_back(test);
     todos.push_back(test2);
     todos.push_back(test3);
+    todos.push_back(test);
     datastream::writeFile(todos, path); 
     datastream::readFile(path);
     return 0;

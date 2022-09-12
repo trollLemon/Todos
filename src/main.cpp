@@ -29,7 +29,7 @@ int main()
     todos.push_back(test3);
     todos.push_back(test);
     datastream::writeFile(todos, path); 
-    datastream::readFile(path);
+    datastream::writeFile(datastream::readFile(path), "/home/haydn/Github/TodoList/test/test3.yaml");
     return 0;
 }
 

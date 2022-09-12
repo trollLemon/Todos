@@ -36,6 +36,12 @@ enum todoStatus
             this->content = input;
             this-> isDone = false;
         };
+        Task(std::string title, std::string input, bool done)
+        {
+            this->name = title;
+            this->content = input;
+            this->isDone = done;
+        };
 
         bool getStatus()
         {
@@ -94,6 +100,11 @@ class Todo{
     {
         this->name = title;
         this-> status = todoStatus::notStarted;
+    };
+    Todo(std::string title, todoStatus status)
+    {
+      this->name = title;
+      this->status = status;
     };
 
     void inProgress()

@@ -1,24 +1,27 @@
-Title: A
-Status: Not Started
-Task 0:
-  - test
-  - Test code for bugs
-  - false
----
-Title: Todo
-Status: Not Started
-Task 0:
-  - test
-  - Test code for bugs
-  - false
-Task 1:
-  - test
-  - There are bugs in the code
-  - false
----
-Title: test
-Status: Not Started
-Task 0:
-  - test
-  - Test code for bugs
-  - false
+- 0: A
+  status: Not Started
+  data:
+    - name: test
+      content: Test code for bugs
+      isDone: false
+- 1: Todo
+  status: Not Started
+  data:
+    - name: test
+      content: Test code for bugs
+      isDone: false
+    - name: r
+      content: There are bugs in the code
+      isDone: false
+- 2: test
+  status: Not Started
+  data:
+    - name: test
+      content: Test code for bugs
+      isDone: false
+- 3: A
+  status: Not Started
+  data:
+    - name: test
+      content: Test code for bugs
+      isDone: false

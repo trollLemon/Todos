@@ -55,7 +55,13 @@ namespace datastream {
                 std::string title = file[i]["data"][j]["name"].as<std::string>();
                 std::string content = file[i]["data"][j]["content"].as<std::string>();  
                 std::string done = file[i]["data"][j]["isDone"].as<std::string>(); 
-                bool isDone {(done == "true") ? false : true  };
+
+                bool isDone;
+
+                if(done== "true")
+                    isDone=true;
+                else
+                    isDone=false;
 
                 Task newTask = Task(title,content,isDone);
                 newTodo.addTask(newTask);

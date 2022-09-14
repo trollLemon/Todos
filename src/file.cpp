@@ -4,6 +4,10 @@
 #include <iostream>
 #include <fstream>
 
+
+
+
+
   //helper function to return strings based on the status Enum in types.h
     std::string status( todoStatus stat)
     {
@@ -38,6 +42,23 @@
 
 
 namespace datastream {
+
+
+
+int getLongestLength(std::vector<Todo> todos){
+
+    int len {0};
+
+    for (Todo& todo: todos)
+    {
+        if(todo.length() > len)
+            len = todo.length();
+    }
+
+    return len;
+
+}
+
 
     std::vector<Todo> readFile(std::string& path)
     {

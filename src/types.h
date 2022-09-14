@@ -132,6 +132,10 @@ class Todo{
         return this->status;
     };
 
+    int length(){
+        return static_cast<int>(this->name.length());
+    };
+
     std::vector<Task>& getTasks()
     {
         return this->tasks;

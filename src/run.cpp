@@ -26,17 +26,27 @@ const std::string logo7{"#       #          #     ####  #####   ####   #### "};
 std::string path {"/home/haydn/Github/TodoList/test/test.yaml"};
 const std::string mesg {" ~ A todo list from inside your Terminal ~"};
 const std::string header {"Todos:"};
-const std::string keybinds {"F1:Exit|F2:Save|F3:Exit And Save|F4:Access Todos"};
+const std::string keybinds {"F1:Exit|F2:Save|F3:Exit And Save|F4:New Todo|Enter:Access Todos"};
 int logoSize {static_cast<int>(logo1.size())};
 int mesgSize {static_cast<int>(mesg.size())};
 int headerSize{static_cast<int>(header.size())};
 
 
+/*Structs----------------------------------------------------------------------*/
+    
+struct item {
+    std::string title;
+    int index;
+    bool selected;
+    };
+
 /*declarations--------------------------------------------------------------------------*/
-void printTodos(WINDOW* , std::vector<Todo>& todos);//prints todo titles in our little box below the "Todos:" header
-
-
-void run()
+void printTodos(WINDOW* , std::vector<item>& items);//prints todo titles in our little box below the "Todos:" header
+void decrementSelection(std::vector<item>& items);
+void incrementSelection(std::vector<item>& items);
+void addTodo(std::vector<Todo>& todos, std::vector<item>& items, std::string name);
+void saveData(std::vector<Todo>& todos);
+int run()
 {
 
     
@@ -47,7 +57,13 @@ void run()
     /*runtime vars*/
     int longestLength {datastream::getLongestLength(todos)+7};//the width for our todo box under the todos header,we add 7 so the text has some space from the borders
     int todoSize {static_cast<int>(todos.size())+4};          //the height for the todo box
-                                                              
+    
+    //color pairs
+    init_pair(1, COLOR_CYAN, COLOR_BLACK);
+    init_pair(2, COLOR_GREEN, COLOR_BLACK);
+    init_pair(3, COLOR_MAGENTA, COLOR_BLACK);
+    
+    
 
     /*Init main window*/
     setlocale(LC_ALL, "");  //set locale so we can print special chars 
@@ -58,12 +74,6 @@ void run()
     cbreak();
     keypad(stdscr,true);
     curs_set(0);
-    
-    //set up some colors
-    init_pair(1, COLOR_CYAN, COLOR_BLACK);
-    init_pair(2, COLOR_GREEN, COLOR_BLACK);
-    init_pair(3, COLOR_MAGENTA, COLOR_BLACK);
-    
     
     box(stdscr,0,0); 
 
@@ -101,27 +111,86 @@ void run()
     WINDOW *win = newwin(todoSize,longestLength,(row/2)+6,(col-longestLength)/2);
     box(win,0,0);
 
-    printTodos(win,todos);
-
-
-    //TODO: wait for user input, if F4 is pressed, pass input into the second window so the user can select a Todo
 
     
-    getch();
+ 
+    std::vector<item> items {};
+    
+    for(int i{0}; i<todos.size(); ++i)
+    {
+        item n_item {todos.at(i).getName(),i, false};
+        items.push_back(n_item);
+    }
+    items.at(0).selected = true;//set the first entry as selected
+
+
+    
+    //program loop
+    
+    bool cont = true;
+    while(cont)
+    {
+        
+    printTodos(win,items);
+
+        switch(getch())
+        {
+         case KEY_F(1):
+             cont=false;
+             break;
+         case KEY_F(4):
+                
+            addTodo(todos,items,"test");
+             break;
+         case KEY_UP:
+             incrementSelection(items);
+             printTodos(win,items);
+             break;
+          case KEY_DOWN:
+             decrementSelection(items);
+             printTodos(win,items);
+             break;     
+
+        }//TODO:implement this
+    }
+
+    delwin(win); 
     endwin();
+
+    return 0;
 
 
 }
 
-void printTodos(WINDOW* win, std::vector<Todo>& todos)
+void printTodos(WINDOW* win, std::vector<item>& items)
 {
-    
+    init_pair(1, COLOR_YELLOW, COLOR_BLACK);   
+
     int counter {2};//start at the second line in the window
-    for(Todo& todo: todos)
+    for(item& i: items)
     {
-        std::string text {"[]"};
-        text.append(todo.getName());
-        mvwprintw(win, counter, 2,"%s", text.c_str());//TODO:get rid of magic number
+
+        std::string text {};
+
+        if(i.selected == true){
+            text= "[*]";
+        }
+        else{
+            text="[]";
+        }
+
+        text.append(i.title).append(" ");
+        int margin {2};
+
+        if(i.selected == true)
+        {
+            wattrset(win, COLOR_PAIR(1)| A_BOLD);
+        }
+        
+
+        mvwprintw(win, counter, margin,"%s", text.c_str());
+        wattroff(win,COLOR_PAIR(1));
+        wattroff(win,A_BOLD);
         ++counter;    
     }
 
@@ -129,5 +198,65 @@ void printTodos(WINDOW* win, std::vector<Todo>& todos)
     wrefresh(win);
 
 }
+
+void incrementSelection(std::vector<item>& items)
+{
+    if(items.front().selected == true)
+    {
+        items.back().selected = true;
+        items.front().selected = false;
+    }
+    else
+    {
+        //find the index of the item that is currently selected, then set the next item as selected
+        int index {};
+        for(int i{0}; i<items.size(); ++i)
+        {
+            if(items.at(i).selected ==true)
+            {
+                index = i;
+                break;
+            }
+
+        }
+        items.at(index).selected =false;
+        items.at(index-1).selected = true;
+    }
+}
+
+void decrementSelection(std::vector<item>& items)
+{
+    if(items.back().selected == true)
+    {
+        items.back().selected = false;
+        items.front().selected = true;
+    }
+    else
+    {
+        //find the index of the item that is currently selected, then set the next item as selected
+        int index {};
+        for(int i{0}; i<items.size(); ++i)
+        {
+            if(items.at(i).selected ==true)
+            {
+                index = i;
+                break;
+            }
+
+        }
+        items.at(index).selected =false;
+        items.at(index+1).selected = true;
+    }
+}
+
+
+void addTodo(std::vector<Todo>& todos, std::vector<item>& items, std::string name )
+{
+    Todo newTodo {Todo(name)};
+    item newItem {{name,todos.size(),false}};
+    todos.push_back(newTodo);
+    items.push_back(newItem);
+}
+
 
 

@@ -123,14 +123,16 @@ int run()
     box(win,0,0);
     wrefresh(win);  
     std::vector<item> items {};
-    
+   
+    if(todos.size()>0)
+    {
     for(int i{0}; i<todos.size(); ++i)
     {
         item n_item {todos.at(i).getName(),i, false};
         items.push_back(n_item);
     }
     items.at(0).selected = true;//set the first entry as selected
-    
+    }
     printTodos(win,items);
 
     bool loop = true;
@@ -141,6 +143,13 @@ int run()
         switch(getch())
         {
             case KEY_F(1):
+                loop = false;
+                break;
+            case KEY_F(2):
+                datastream::writeFile(todos,path);
+                break;
+            case KEY_F(3):
+                datastream::writeFile(todos,path);
                 loop = false;
                 break;
             case KEY_F(5):
@@ -172,7 +181,6 @@ int run()
                 break;
 
         }
-        
             printTodos(win,items);
     }
     delwin(win);
@@ -331,7 +339,7 @@ char promptUserDelete(int row, int col)
             break;
     }
     wclear(prompt);
-    delwin(prompt);
+    destroyWindow(prompt);
     return response;
 }
 

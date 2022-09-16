@@ -159,15 +159,17 @@ int run()
                     if(response == 'y')
                     deleteTodo(todos,items);
                 }
+                wclear(win);
                 destroyWindow(win);
                 win= createWindow(static_cast<int>(todos.size())+4,datastream::getLongestLength(todos)+7,row,col);
+                
                 break;
             case KEY_F(4):
                  input = promptUser((row/2)-2, (col/2)-10);   
                  addTodo(todos,items,input); 
                  destroyWindow(win);
                  win= createWindow(static_cast<int>(todos.size())+4,datastream::getLongestLength(todos)+7,row,col);
-
+                 box(win,0,0);
                  break;
             case KEY_UP:
                 if(items.size() > 1)

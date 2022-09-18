@@ -5,7 +5,7 @@
 #include "locale.h"
 #include <iostream>
 #include <string>
-
+#include "taskwindow.h"
 
 
 
@@ -36,7 +36,6 @@ int headerSize{static_cast<int>(header.size())};
     
 struct item {
     std::string title;
-    int index;
     bool selected;
     };
 
@@ -121,14 +120,16 @@ int run()
     /*Other windows*/
     WINDOW* win= newwin(todoSize,longestLength,(row/2)+6,(col-longestLength)/2);
     box(win,0,0);
-    wrefresh(win);  
+    wrefresh(win);
+
+
     std::vector<item> items {};
    
     if(todos.size()>0)
     {
     for(int i{0}; i<todos.size(); ++i)
     {
-        item n_item {todos.at(i).getName(),i, false};
+        item n_item {todos.at(i).getName(), false};
         items.push_back(n_item);
     }
     items.at(0).selected = true;//set the first entry as selected
@@ -169,8 +170,15 @@ int run()
                  addTodo(todos,items,input); 
                  destroyWindow(win);
                  win= createWindow(static_cast<int>(todos.size())+4,datastream::getLongestLength(todos)+7,row,col);
-                 box(win,0,0);
                  break;
+
+            case '\n':
+                
+                 destroyWindow(win);
+                 launchTaskEditor(todos.at(0), row, col); 
+                 win= createWindow(static_cast<int>(todos.size())+4,datastream::getLongestLength(todos)+7,row,col);  
+                 break;
+
             case KEY_UP:
                 if(items.size() > 1)
                     incrementSelection(items);
@@ -288,7 +296,7 @@ void decrementSelection(std::vector<item>& items)
 void addTodo(std::vector<Todo>& todos, std::vector<item>& items, std::string name )
 {
     Todo newTodo {Todo(name)};
-    item newItem {name,static_cast<int>(todos.size()),false};
+    item newItem {name,false};
     
     if(items.size() == 0)
         newItem.selected=true;
@@ -306,7 +314,8 @@ void deleteTodo(std::vector<Todo>& todos, std::vector<item>& items)
     for (item& i: items)
     {
         if (i.selected == true)
-            index = i.index;
+            break;
+    ++index;
     }
 
     items.erase(items.begin() + index);

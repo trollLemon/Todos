@@ -40,6 +40,7 @@ struct item {
     };
 
 /*declarations--------------------------------------------------------------------------*/
+void printGreeter();
 void printTodos(WINDOW* , std::vector<item>& items);//prints todo titles in our little box below the "Todos:" header
 void decrementSelection(std::vector<item>& items);
 void incrementSelection(std::vector<item>& items);
@@ -79,43 +80,16 @@ int run()
     keypad(stdscr,true);
     curs_set(0);
     
-    box(stdscr,0,0); 
-
+    
     int row {};
     int col {};
 
     getmaxyx(stdscr,row,col);	
 
-    /*Printing Main Text*/
 
-    mvprintw((row-(row-3)),(col-logoSize)/2, "%s", logo1.c_str());
-    mvprintw((row-(row-4)),(col-logoSize)/2, "%s", logo2.c_str());
-    mvprintw((row-(row-5)),(col-logoSize)/2, "%s", logo3.c_str());
-    mvprintw((row-(row-6)),(col-logoSize)/2, "%s", logo4.c_str());
-    mvprintw((row-(row-7)),(col-logoSize)/2, "%s", logo5.c_str());
-    mvprintw((row-(row-8)),(col-logoSize)/2, "%s", logo6.c_str());
-    mvprintw((row-(row-9)),(col-logoSize)/2, "%s", logo7.c_str());
-    
-    //color the ascii text
-    for(int i{3}; i<10; ++i)
-    {
-        mvchgat((row-(row-i)), (col-logoSize)/2, logoSize, A_BOLD, 3, NULL);
-    }
 
-   
-    mvprintw(row-(row-18), (col-mesgSize)/2, "%s", mesg.c_str()); 
-    mvchgat(row-(row-18), (col-mesgSize)/2, mesg.size(), A_BOLD,2,NULL );
+    printGreeter();
 
-    
-    mvprintw((row/2)+4, (col-headerSize)/2, "%s", header.c_str()); 
-    mvchgat((row/2)+4, (col-headerSize)/2, headerSize, A_BOLD,1,NULL );
-
-    
-
-    mvprintw(row-3, (col-keybinds.size())/2, "%s", keybinds.c_str());
-    mvchgat(row-3, (col-keybinds.size())/2, keybinds.size(), A_BOLD,2, NULL);
-   
-    refresh();
 
     /*Other windows*/
     WINDOW* win= newwin(todoSize,longestLength,(row/2)+6,(col-longestLength)/2);
@@ -177,6 +151,8 @@ int run()
                  destroyWindow(win);
                  launchTaskEditor(todos.at(0), row, col); 
                  win= createWindow(static_cast<int>(todos.size())+4,datastream::getLongestLength(todos)+7,row,col);  
+                 box(win,0,0);
+                 printGreeter();
                  break;
 
             case KEY_UP:
@@ -190,6 +166,7 @@ int run()
                 printTodos(win, items);
                 break;
 
+
         }
             printTodos(win,items);
     }
@@ -197,6 +174,49 @@ int run()
     endwin();
 
     return 0;
+
+}
+
+void printGreeter()
+{
+    box(stdscr,0,0); 
+
+    int row {};
+    int col {};
+
+    getmaxyx(stdscr,row,col);	
+
+    /*Printing Main Text*/
+
+    mvprintw((row-(row-3)),(col-logoSize)/2, "%s", logo1.c_str());
+    mvprintw((row-(row-4)),(col-logoSize)/2, "%s", logo2.c_str());
+    mvprintw((row-(row-5)),(col-logoSize)/2, "%s", logo3.c_str());
+    mvprintw((row-(row-6)),(col-logoSize)/2, "%s", logo4.c_str());
+    mvprintw((row-(row-7)),(col-logoSize)/2, "%s", logo5.c_str());
+    mvprintw((row-(row-8)),(col-logoSize)/2, "%s", logo6.c_str());
+    mvprintw((row-(row-9)),(col-logoSize)/2, "%s", logo7.c_str());
+    
+    //color the ascii text
+    for(int i{3}; i<10; ++i)
+    {
+        mvchgat((row-(row-i)), (col-logoSize)/2, logoSize, A_BOLD, 3, NULL);
+    }
+
+   
+    mvprintw(row-(row-18), (col-mesgSize)/2, "%s", mesg.c_str()); 
+    mvchgat(row-(row-18), (col-mesgSize)/2, mesg.size(), A_BOLD,2,NULL );
+
+    
+    mvprintw((row/2)+4, (col-headerSize)/2, "%s", header.c_str()); 
+    mvchgat((row/2)+4, (col-headerSize)/2, headerSize, A_BOLD,1,NULL );
+
+    
+
+    mvprintw(row-3, (col-keybinds.size())/2, "%s", keybinds.c_str());
+    mvchgat(row-3, (col-keybinds.size())/2, keybinds.size(), A_BOLD,2, NULL);
+   
+    refresh();
+
 
 }
 

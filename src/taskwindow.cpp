@@ -13,7 +13,7 @@ WINDOW* drawTaskDesc(int row, int col);
 void printTasks(WINDOW* win, std::vector<item>& items);
 void printTaskContent(WINDOW* win, std::vector<item>& items);
 void clearEverything(WINDOW* p, WINDOW* q);
-
+void printHeadersAndFooters(WINDOW* p, WINDOW* q, int row, int col);
 
 void addTask(std::vector<Task>& tasks, std::vector<item>& items, std::string name, std::string content);
 
@@ -26,7 +26,6 @@ void launchTaskEditor(Todo& todo, int row, int col)
   WINDOW* content=newwin(row,col/2,0,col/2);
   box(content,0,0);
   wrefresh(content);
-
 
 
   std::vector<item> items;
@@ -45,6 +44,7 @@ void launchTaskEditor(Todo& todo, int row, int col)
 
   //print content of the first item in both windows
 
+ printHeadersAndFooters(tasks,content, row, col);
 
   printTasks(tasks, items);
   bool loop = true;
@@ -80,14 +80,18 @@ void launchTaskEditor(Todo& todo, int row, int col)
 
     }
       
-        clearEverything(tasks,content);
+        clearEverything(tasks, content);
         if(items.size()!=0){
           printTasks(tasks,items);
           //printTaskContent(content,items);
 
         }
-
     
+        box(tasks,0,0);
+        box(content,0,0);
+        printHeadersAndFooters(tasks,content, row, col);
+        wrefresh(tasks);
+        wrefresh(content);
 
   }
 
@@ -97,6 +101,23 @@ void launchTaskEditor(Todo& todo, int row, int col)
 
   delwin(tasks);
   delwin(content);
+
+}
+
+void printHeadersAndFooters(WINDOW* p, WINDOW* q,int row, int col)
+{
+     init_pair(4, COLOR_YELLOW, COLOR_BLACK); 
+      
+     mvwprintw(p,row-(row-1),3, "%s", "Tasks");
+     wmove(p,row-(row-3), 1);
+     whline(p,'_',(col/2)-2);
+    
+     wmove(p,row-4, 1);
+     whline(p,'_',(col/2)-2);
+     mvwprintw(p,row-2,3, "%s", "F1: Exit| F2: Save| F3: Exit and Save| F4: Add Task| Enter: Edit Task" );
+ 
+
+     wrefresh(p);
 
 }
 

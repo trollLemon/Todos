@@ -9,7 +9,7 @@ project(tdl VERSION 1.0)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
-add_executable(tdl src/main.cpp src/file.cpp src/run.cpp)
+add_executable(tdl src/main.cpp src/file.cpp src/run.cpp src/taskwindow.cpp)
 
 find_package(Curses REQUIRED)
 include_directories(${CURSES_INCLUDE_DIR})
